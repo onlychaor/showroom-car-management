@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Layout from '../../components/Layout'
+import AuthLayout from '../../components/AuthLayout'
 import { supabase } from '../../lib/supabaseClient'
 
 export default function AuthPage() {
@@ -26,36 +26,26 @@ export default function AuthPage() {
     setError(null)
     setMessage(null)
 
-    // Try to sign up user
     const { data, error } = await supabase.auth.signUp({ email, password })
+    setLoading(false)
     if (error) {
-      setLoading(false)
       setError(error.message)
       return
     }
 
-    // If signUp returns user but no session, attempt to sign in immediately
-    try {
-      const { error: signinErr } = await supabase.auth.signInWithPassword({ email, password })
-      setLoading(false)
-      if (signinErr) {
-        // Likely requires email confirmation
-        setMessage('Đăng ký thành công. Vui lòng kiểm tra email để xác nhận.')
-      } else {
-        window.location.href = '/'
-      }
-    } catch (err: any) {
-      setLoading(false)
-      setError(err?.message || 'Lỗi không xác định')
+    // If a session was returned, redirect. Otherwise inform user to confirm email.
+    if ((data as any)?.session) {
+      window.location.href = '/'
+    } else {
+      setMessage('Đăng ký thành công. Nếu cần, vui lòng kiểm tra email để xác nhận trước khi đăng nhập.')
     }
   }
 
   const isSignIn = mode === 'signin'
 
   return (
-    <Layout>
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-sm p-6">
+    <AuthLayout>
+      <div className="w-full max-w-md bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-center gap-4 mb-4">
             <button onClick={() => setMode('signin')} className={`px-4 py-2 rounded ${isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign in</button>
             <button onClick={() => setMode('signup')} className={`px-4 py-2 rounded ${!isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign up</button>
@@ -83,9 +73,8 @@ export default function AuthPage() {
               <>Đã có tài khoản? <button onClick={() => setMode('signin')} className="text-primary font-medium">Sign in</button></>
             )}
           </div>
-        </div>
       </div>
-    </Layout>
+    </AuthLayout>
   )
 }
 

@@ -20,8 +20,8 @@ export const Sidebar = () => {
 
       <nav className="flex flex-col gap-3">
         {nav.map((n) => (
-          <Link key={n.href} href={n.href}>
-            <a className="px-3 py-2 rounded hover:bg-[#0b1b2b]">{n.label}</a>
+          <Link key={n.href} href={n.href} className="px-3 py-2 rounded hover:bg-[#0b1b2b]">
+            {n.label}
           </Link>
         ))}
       </nav>

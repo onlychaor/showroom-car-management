@@ -7,6 +7,13 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // redirect to unified auth page
+  if (typeof window !== 'undefined') {
+    if (window.location.pathname !== '/auth') {
+      window.location.href = '/auth'
+      return null as any
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

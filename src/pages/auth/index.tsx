@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import AuthLayout from '../../components/AuthLayout'
-import { supabase } from '../../lib/supabaseClient'
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
@@ -17,19 +16,10 @@ export default function AuthPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    // Dev fallback: if Supabase not configured, accept any credentials and create a dev session.
-    if (!supabase || !(supabase as any).auth || typeof (supabase as any).auth.signInWithPassword !== 'function') {
-      // store dev session
-      localStorage.setItem('dev_user', JSON.stringify({ email }))
-      setLoading(false)
-      window.location.href = '/'
-      return
-    }
-
-    const { error } = await (supabase as any).auth.signInWithPassword({ email, password })
+    // simple local dev auth: store dev_user and redirect
+    localStorage.setItem('dev_user', JSON.stringify({ id: 'dev-' + Math.random().toString(36).slice(2,8), email }))
     setLoading(false)
-    if (error) setError(error.message)
-    else window.location.href = '/'
+    window.location.href = '/'
   }
 
   async function handleSignUp(e: React.FormEvent) {
@@ -46,32 +36,12 @@ export default function AuthPage() {
       return
     }
 
-    // Dev fallback: if Supabase not configured, create a dev user locally.
-    if (!supabase || !(supabase as any).auth || typeof (supabase as any).auth.signUp !== 'function') {
-      localStorage.setItem('dev_user', JSON.stringify({ email }))
-      setMessage('Đăng ký thành công (chế độ dev). Chuyển vào trong sau 3 giây...')
-      // redirect into app after 3s
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 3000)
-      return
-    }
-    setLoading(true)
-    const { data, error } = await (supabase as any).auth.signUp({ email, password })
-    setLoading(false)
-    if (error) {
-      setError(error.message)
-      return
-    }
-
-    if ((data as any)?.session) {
-      setMessage('Đăng ký thành công. Chuyển vào trong sau 3 giây...')
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 3000)
-    } else {
-      setMessage('Đăng ký thành công. Nếu cần, vui lòng kiểm tra email để xác nhận trước khi đăng nhập.')
-    }
+    // local dev signup: store dev_user and redirect after delay
+    localStorage.setItem('dev_user', JSON.stringify({ id: 'dev-' + Math.random().toString(36).slice(2,8), email, name: email.split('@')[0] }))
+    setMessage('Đăng ký thành công (dev). Chuyển vào trong sau 3 giây...')
+    setTimeout(() => {
+      window.location.href = '/'
+    }, 3000)
   }
 
   const isSignIn = mode === 'signin'

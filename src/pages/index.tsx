@@ -35,37 +35,110 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">Thống kê</h1>
-        <div className="flex items-center gap-4">
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold mb-1">Thống kê</h1>
+          <div className="text-sm text-slate-400">Tổng quan & báo cáo</div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="bg-white/5 px-3 py-2 rounded text-sm text-slate-300">Hôm nay ▾</div>
           <NotificationBell />
         </div>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-8">
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <StatCard title="Users" value={stats.users} />
-            <StatCard title="Cars" value={stats.cars} />
-            <StatCard title="Contacts" value={stats.contacts} />
-          </div>
-
-          <div className="card-bg p-6 rounded shadow">
-            <div className="flex items-start gap-6">
-              <div style={{ width: 300 }}>
-                <SemiDonut value={Math.round((stats.contacts / Math.max(1, stats.cars + stats.contacts + stats.users)) * 100)} />
+        <div className="col-span-12">
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="card-bg p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-slate-400">Contact</div>
+                  <div className="text-2xl font-bold">{stats.contacts}</div>
+                </div>
+                <div className="text-xs text-slate-300">20.5% ↑</div>
               </div>
-              <div className="flex-1">
-                <div className="text-3xl font-bold">{stats.contacts}</div>
-                <div className="text-sm text-slate-400">Contact</div>
-                <ul className="mt-4 space-y-2 text-sm">
-                  {(report?.byStatus || []).map((s: any) => (
-                    <li key={s.status} className="flex items-center justify-between">
-                      <div><span className="inline-block w-3 h-3 bg-sky-400 rounded-full mr-2 align-middle" /> {s.status || 'Unknown'}</div>
-                      <div className="text-sm text-slate-300">{s.count || 0}</div>
-                    </li>
-                  ))}
-                </ul>
+            </div>
+            <div className="card-bg p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-slate-400">Đã hoàn thành</div>
+                  <div className="text-2xl font-bold">{(report?.byStatus?.find((s: any) => s.status === 'Đã hoàn thành')?.count) || 0}</div>
+                </div>
+                <div className="text-xs text-red-400">7.0% ↓</div>
+              </div>
+            </div>
+            <div className="card-bg p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-slate-400">Chưa hoàn thành</div>
+                  <div className="text-2xl font-bold">{(report?.byStatus?.find((s: any) => s.status === 'Chưa hoàn thành')?.count) || 0}</div>
+                </div>
+                <div className="text-xs text-yellow-400">17.5% ↑</div>
+              </div>
+            </div>
+            <div className="card-bg p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-slate-400">Đã hủy</div>
+                  <div className="text-2xl font-bold">{(report?.byStatus?.find((s: any) => s.status === 'Đã hủy')?.count) || 0}</div>
+                </div>
+                <div className="text-xs text-slate-300">0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-8">
+          <div className="card-bg p-6 rounded shadow">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="flex items-center justify-center">
+                <div style={{ width: 380 }}>
+                  <SemiDonut value={Math.round((stats.contacts / Math.max(1, stats.cars + stats.contacts + stats.users)) * 100)} />
+                  <div className="text-center mt-[-56px]">
+                    <div className="text-3xl font-bold">{stats.contacts}</div>
+                    <div className="text-sm text-slate-400">Contact</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="grid grid-rows-3 gap-3 h-full">
+                  <div className="card-bg p-3 rounded">
+                    <div className="text-sm text-slate-400 mb-2">Contact gần đây</div>
+                    <div className="space-y-2 text-sm">
+                      {(report?.recent || []).slice(0, 4).map((r: any) => (
+                        <div key={r.id} className="flex items-center justify-between">
+                          <div>
+                            <div className="font-medium">{r.title}</div>
+                            <div className="text-xs text-slate-400">{r.user?.name} • {r.car?.name}</div>
+                          </div>
+                          <div className="text-xs text-slate-300">{r.status}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="card-bg p-3 rounded">
+                    <div className="text-sm text-slate-400 mb-2">User gần đây</div>
+                    <div className="space-y-2 text-sm">
+                      {(report?.recent || []).slice(0, 3).map((r: any) => (
+                        <div key={r.id} className="flex items-center justify-between">
+                          <div className="text-sm">{r.user?.name}</div>
+                          <div className="text-xs text-slate-400">{r.user?.email}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="card-bg p-3 rounded">
+                    <div className="text-sm text-slate-400 mb-2">Car phổ biến</div>
+                    <div className="space-y-2 text-sm">
+                      {(report?.recent || []).slice(0, 3).map((r: any) => (
+                        <div key={r.id} className="flex items-center justify-between">
+                          <div className="text-sm">{r.car?.name}</div>
+                          <div className="text-xs text-slate-400">800tr</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -73,15 +146,18 @@ export default function Dashboard() {
 
         <div className="col-span-4">
           <div className="card-bg p-4 rounded shadow">
-            <div className="text-sm text-slate-400 mb-3">Contact gần đây</div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm text-slate-400">Contact gần đây</div>
+              <div className="text-xs text-slate-400">Tất cả ▾</div>
+            </div>
             <div className="space-y-3">
               {(report?.recent || []).map((r: any) => (
                 <div key={r.id} className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">{r.title}</div>
-                    <div className="text-xs text-slate-400">{r.user?.name} • {r.car?.name}</div>
+                    <div className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString()}</div>
                   </div>
-                  <div className="text-sm text-slate-300">{r.status}</div>
+                  <div className="text-xs text-slate-300">{r.status}</div>
                 </div>
               ))}
             </div>

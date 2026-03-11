@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { useAuth } from '../lib/auth'
 
 const Icon = ({ name }: { name: string }) => {
@@ -56,7 +58,7 @@ export const Sidebar = () => {
   const [showProfile, setShowProfile] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
-  const { pathname } = require('next/router').useRouter()
+  const { pathname } = useRouter()
 
   return (
     <aside className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative">

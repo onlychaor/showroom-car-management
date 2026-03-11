@@ -7,10 +7,12 @@ const AuthContext = createContext<{
   user: User
   loading: boolean
   signOut: () => Promise<void>
+  updateUser: (payload: { name?: string; email?: string }) => Promise<any>
 }>({
   user: null,
   loading: true,
   signOut: async () => {},
+  updateUser: async () => ({}),
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -23,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (dev) {
       try {
         const parsed = JSON.parse(dev)
-        setUser({ id: parsed.id || 'dev', email: parsed.email })
+        setUser({ id: parsed.id || 'dev', email: parsed.email, name: parsed.name || parsed.displayName || null })
         setLoading(false)
         return
       } catch {
@@ -36,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if ((supabase as any)?.auth?.getSession) {
         (supabase as any).auth.getSession().then((r: any) => {
           const s = r?.data?.session
-          if (s?.user) setUser({ id: s.user.id, email: s.user.email })
+          if (s?.user) setUser({ id: s.user.id, email: s.user.email, name: (s.user.user_metadata && s.user.user_metadata.full_name) || null })
           setLoading(false)
         }).catch(() => setLoading(false))
       } else {
@@ -55,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = (supabase as any).auth.onAuthStateChange((event: string, session: any) => {
-      if (session?.user) setUser({ id: session.user.id, email: session.user.email })
+      if (session?.user) setUser({ id: session.user.id, email: session.user.email, name: (session.user.user_metadata && session.user.user_metadata.full_name) || null })
       else setUser(null)
     })
 
@@ -63,6 +65,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (subscription?.unsubscribe) subscription.unsubscribe()
     }
   }, [])
+
+  async function updateUser(payload: { name?: string; email?: string }) {
+    // Dev fallback: update localStorage
+    if (typeof window !== 'undefined' && localStorage.getItem('dev_user')) {
+      const parsed = JSON.parse(localStorage.getItem('dev_user') || '{}')
+      const merged = { ...parsed, ...payload }
+      localStorage.setItem('dev_user', JSON.stringify(merged))
+      setUser((u) => ({ ...(u || {}), ...payload }))
+      return merged
+    }
+
+    // If logged-in user (with id) update via API
+    if (user?.id) {
+      const res = await fetch('/api/users', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: user.id, ...payload }) })
+      const json = await res.json()
+      setUser((u) => ({ ...(u || {}), ...(json || {} as any) }))
+      return json
+    }
+    return null
+  }
 
   async function signOut() {
     // clear dev user
@@ -75,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') window.location.href = '/auth'
   }
 
-  return <AuthContext.Provider value={{ user, loading, signOut }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, loading, signOut, updateUser }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)

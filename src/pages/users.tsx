@@ -17,7 +17,9 @@ export default function UsersPage() {
   }, [])
 
   function refresh() {
-    fetch('/api/users').then((r) => r.json()).then(setUsers)
+    fetch('/api/users')
+      .then((r) => r.json())
+      .then((data) => setUsers(Array.isArray(data) ? data : []))
     setShowForm(false)
     setEditing(null)
   }
@@ -27,7 +29,12 @@ export default function UsersPage() {
     refresh()
   }
 
-  const filtered = users.filter((u) => u.name?.toLowerCase().includes(query.toLowerCase()) || u.email?.toLowerCase().includes(query.toLowerCase()))
+  const filtered = (users || []).filter((u) => {
+    const name = (u?.name || '').toString().toLowerCase()
+    const email = (u?.email || '').toString().toLowerCase()
+    const q = (query || '').toLowerCase()
+    return name.includes(q) || email.includes(q)
+  })
 
   return (
     <Layout>

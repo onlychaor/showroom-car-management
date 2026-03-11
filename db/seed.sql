@@ -13,4 +13,3 @@ INSERT INTO cars (owner_id, name, color, price, registration_expires_at) VALUES
 INSERT INTO contacts (user_id, car_id, title, email, status, scheduled_at) VALUES
 ((SELECT id FROM users WHERE email='john@example.com'), (SELECT id FROM cars WHERE name='Ford Transit'), 'Contact A','contactA@example.com','Đã hoàn thành', now() - INTERVAL '3 days'),
 ((SELECT id FROM users WHERE email='sophie@example.com'), (SELECT id FROM cars WHERE name='Honda Civic'), 'Contact B','contactB@example.com','Chưa hoàn thành', now() + INTERVAL '2 days');
-

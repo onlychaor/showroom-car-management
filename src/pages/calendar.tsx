@@ -24,7 +24,7 @@ export default function CalendarPage() {
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    fetch('/api/contacts').then((r) => r.json()).then(setEvents)
+    fetch('/api/contacts').then((r) => r.json()).then((data) => setEvents(Array.isArray(data) ? data : []))
   }, [])
 
   const days = useMemo(() => {
@@ -35,6 +35,7 @@ export default function CalendarPage() {
 
   const eventsByDay = useMemo(() => {
     const map: Record<string, any[]> = {}
+    if (!Array.isArray(events)) return map
     for (const e of events) {
       const date = e.scheduled_at ? new Date(e.scheduled_at) : new Date(e.created_at)
       const key = date.toDateString()
@@ -104,9 +105,9 @@ export default function CalendarPage() {
 
           <div className="card-bg p-4 rounded">
             <div className="mb-2 font-medium">Upcoming</div>
-            <div className="space-y-3">
-              {events
-                .filter((e) => (!query || (e.title || '').toLowerCase().includes(query.toLowerCase())))
+          <div className="space-y-3">
+              {(Array.isArray(events) ? events : [])
+                .filter((e) => (!query || (String(e.title || '').toLowerCase().includes(query.toLowerCase()))))
                 .sort((a: any, b: any) => new Date(a.scheduled_at || a.created_at).getTime() - new Date(b.scheduled_at || b.created_at).getTime())
                 .slice(0, 8)
                 .map((e: any) => (

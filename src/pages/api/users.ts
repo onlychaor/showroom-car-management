@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ObjectId } from 'mongodb'
 import { getDb } from '../../lib/mongo'
-import { createServerSupabase } from '../../lib/supabaseClient'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.MONGODB_URI
@@ -35,51 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).end()
   }
 
-  // fallback to supabase if no mongo
-  const supabase = createServerSupabase()
-  if (req.method === 'GET') {
-    try {
-      const { data, error } = await supabase.from('users').select('*')
-      if (error) return res.status(500).json({ error: error.message })
-      return res.status(200).json(data)
-    } catch {
-      return res.status(200).json([
-        { id: 'local-1', name: 'John Carter', email: 'john@example.com', phone: '0123456789' },
-        { id: 'local-2', name: 'Sophie Moore', email: 'sophie@example.com', phone: '0987654321' },
-      ])
-    }
-  }
-  if (req.method === 'POST') {
-    const payload = req.body
-    try {
-      const { data, error } = await supabase.from('users').insert([payload]).select()
-      if (error) return res.status(500).json({ error: error.message })
-      return res.status(201).json(data)
-    } catch {
-      return res.status(201).json([{ id: 'local-new', ...payload }])
-    }
-  }
-  if (req.method === 'PUT') {
-    const { id, ...rest } = req.body
-    try {
-      const { data, error } = await supabase.from('users').update(rest).eq('id', id).select()
-      if (error) return res.status(500).json({ error: error.message })
-      return res.status(200).json(data)
-    } catch {
-      return res.status(200).json([{ id, ...rest }])
-    }
-  }
-  if (req.method === 'DELETE') {
-    const { id } = req.query
-    try {
-      const { data, error } = await supabase.from('users').delete().eq('id', id)
-      if (error) return res.status(500).json({ error: error.message })
-      return res.status(200).json(data)
-    } catch {
-      return res.status(200).json({ deleted: id })
-    }
-  }
-
-  return res.status(405).end()
+  return res.status(405).json({ error: 'MONGODB_URI not configured or unsupported method' })
 }
 

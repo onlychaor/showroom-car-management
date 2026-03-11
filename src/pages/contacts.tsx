@@ -17,7 +17,9 @@ export default function ContactsPage() {
   }, [])
 
   function refresh() {
-    fetch('/api/contacts').then((r) => r.json()).then(setItems)
+    fetch('/api/contacts')
+      .then((r) => r.json())
+      .then((data) => setItems(Array.isArray(data) ? data : []))
     setShowForm(false)
     setEditing(null)
   }
@@ -27,7 +29,12 @@ export default function ContactsPage() {
     refresh()
   }
 
-  const filtered = items.filter((c) => c.title?.toLowerCase().includes(query.toLowerCase()) || c.email?.toLowerCase().includes(query.toLowerCase()))
+  const filtered = (items || []).filter((c) => {
+    const title = (c?.title || '').toString().toLowerCase()
+    const email = (c?.email || '').toString().toLowerCase()
+    const q = (query || '').toLowerCase()
+    return title.includes(q) || email.includes(q)
+  })
 
   return (
     <Layout>

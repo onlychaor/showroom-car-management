@@ -1,7 +1,19 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { Sidebar } from './Sidebar'
+import { useAuth } from '../lib/auth'
+import { useRouter } from 'next/router'
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    // protect routes except /auth
+    if (!loading && !user && !router.pathname.startsWith('/auth')) {
+      router.push('/auth')
+    }
+  }, [user, loading, router])
+
   return (
     <div className="flex">
       <Sidebar />

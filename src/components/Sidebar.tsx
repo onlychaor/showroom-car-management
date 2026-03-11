@@ -26,6 +26,13 @@ const Icon = ({ name }: { name: string }) => {
         <path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     )
+  if (name === 'bell')
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="inline-block mr-3" aria-hidden>
+        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
   return null
 }
 
@@ -43,7 +50,7 @@ export const Sidebar = () => {
       ],
     },
     { href: '/calendar', label: 'Lịch', icon: 'calendar' },
-    { href: '/logs', label: 'Nhật ký', icon: 'log' },
+    { href: '/notifications', label: 'Thông báo', icon: 'bell' },
   ]
   const { user, signOut } = useAuth()
   const { pathname } = require('next/router').useRouter()

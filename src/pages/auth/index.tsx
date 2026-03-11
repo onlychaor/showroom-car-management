@@ -49,9 +49,11 @@ export default function AuthPage() {
     // Dev fallback: if Supabase not configured, create a dev user locally.
     if (!supabase || !(supabase as any).auth || typeof (supabase as any).auth.signUp !== 'function') {
       localStorage.setItem('dev_user', JSON.stringify({ email }))
-      setMessage('Đăng ký thành công (chế độ dev). Bạn đã được đăng nhập tạm thời.')
-      // redirect into app
-      window.location.href = '/'
+      setMessage('Đăng ký thành công (chế độ dev). Chuyển vào trong sau 3 giây...')
+      // redirect into app after 3s
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 3000)
       return
     }
     setLoading(true)
@@ -63,7 +65,10 @@ export default function AuthPage() {
     }
 
     if ((data as any)?.session) {
-      window.location.href = '/'
+      setMessage('Đăng ký thành công. Chuyển vào trong sau 3 giây...')
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 3000)
     } else {
       setMessage('Đăng ký thành công. Nếu cần, vui lòng kiểm tra email để xác nhận trước khi đăng nhập.')
     }

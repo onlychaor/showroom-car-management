@@ -47,8 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               status: 1,
               scheduled_at: 1,
               created_at: 1,
-              user: { id: '$user._id', name: '$user.name', email: '$user.email' },
-              car: { id: '$car._id', name: '$car.name' },
+              user: { id: { $toString: '$user._id' }, name: '$user.name', email: '$user.email' },
+              car: { id: { $toString: '$car._id' }, name: '$car.name' },
             },
           },
         ])

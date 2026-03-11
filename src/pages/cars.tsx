@@ -1,6 +1,7 @@
 import Layout from '../components/Layout'
 import { useEffect, useState } from 'react'
 import CarForm from '../components/CarForm'
+import Modal from '../components/Modal'
 
 type Car = { id: string; name: string; color?: string; price?: string }
 
@@ -32,7 +33,7 @@ export default function CarsPage() {
       <div className="flex items-center justify-between mb-3">
         <div />
         <div>
-          <button onClick={() => setShowForm(true)} className="px-4 py-2 bg-pink-400 rounded">Add car</button>
+          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add car</button>
         </div>
       </div>
 
@@ -43,6 +44,7 @@ export default function CarsPage() {
               <th className="py-2">Name</th>
               <th>Color</th>
               <th>Price</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -53,7 +55,7 @@ export default function CarsPage() {
                 <td>{c.price}</td>
                 <td className="text-right">
                   <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-pink-300 mr-3">Edit</button>
-                  <button onClick={() => remove(c.id)} className="text-sm text-red-400">Delete</button>
+                  <button onClick={() => setShowForm(true) || remove(c.id)} className="text-sm text-red-400">Delete</button>
                 </td>
               </tr>
             ))}
@@ -61,12 +63,9 @@ export default function CarsPage() {
         </table>
       </div>
 
-      {showForm && (
-        <div className="mt-4 card-bg p-4 rounded">
-          <h3 className="mb-3">{editing ? 'Edit car' : 'Add car'}</h3>
-          <CarForm initial={editing} onSaved={refresh} />
-        </div>
-      )}
+      <Modal open={showForm} title={editing ? 'Edit car' : 'New car'} onClose={() => setShowForm(false)}>
+        <CarForm initial={editing} onSaved={refresh} />
+      </Modal>
     </Layout>
   )
 }

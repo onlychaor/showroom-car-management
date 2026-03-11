@@ -13,11 +13,11 @@ export default function CarsPage() {
   useEffect(() => {
     fetch('/api/cars')
       .then((r) => r.json())
-      .then(setCars)
+      .then((data) => setCars(Array.isArray(data) ? data : []))
   }, [])
 
   function refresh() {
-    fetch('/api/cars').then((r) => r.json()).then(setCars)
+    fetch('/api/cars').then((r) => r.json()).then((data) => setCars(Array.isArray(data) ? data : []))
     setShowForm(false)
     setEditing(null)
   }
@@ -55,7 +55,7 @@ export default function CarsPage() {
                 <td>{c.price}</td>
                 <td className="text-right">
                   <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-pink-300 mr-3">Edit</button>
-                  <button onClick={() => setShowForm(true) || remove(c.id)} className="text-sm text-red-400">Delete</button>
+                  <button onClick={() => remove(c.id)} className="text-sm text-red-400">Delete</button>
                 </td>
               </tr>
             ))}

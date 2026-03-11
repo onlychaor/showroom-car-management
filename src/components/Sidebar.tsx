@@ -30,13 +30,23 @@ const Icon = ({ name }: { name: string }) => {
 }
 
 export const Sidebar = () => {
-  const nav = [
+  const nav: any[] = [
     { href: '/', label: 'Thống kê', icon: 'stats' },
-    { href: '/users', label: 'Quản lý', icon: 'manage' },
+    {
+      href: '/users',
+      label: 'Quản lý',
+      icon: 'manage',
+      children: [
+        { href: '/users', label: 'Users', icon: 'user' },
+        { href: '/contacts', label: 'Contacts', icon: 'contacts' },
+        { href: '/cars', label: 'Cars', icon: 'car' },
+      ],
+    },
     { href: '/calendar', label: 'Lịch', icon: 'calendar' },
     { href: '/logs', label: 'Nhật ký', icon: 'log' },
   ]
   const { user, signOut } = useAuth()
+  const { pathname } = require('next/router').useRouter()
 
   return (
     <aside className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative">
@@ -48,13 +58,30 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      <nav className="flex flex-col gap-3">
-        {nav.map((n) => (
-          <Link key={n.href} href={n.href} className="px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center">
-            <Icon name={n.icon} />
-            <span>{n.label}</span>
-          </Link>
-        ))}
+      <nav className="flex flex-col gap-1">
+        {nav.map((n) =>
+          n.children ? (
+            <div key={n.href}>
+              <div className="px-3 py-2 rounded text-slate-300 flex items-center">
+                <Icon name={n.icon} />
+                <span className="font-medium">{n.label}</span>
+              </div>
+              <div className="ml-4 mt-1 space-y-1">
+                {n.children.map((c: any) => (
+                  <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
+                    <Icon name={c.icon} />
+                    <span className="text-sm">{c.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <Link key={n.href} href={n.href} className={`px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === n.href ? 'bg-[#0b1b2b]' : ''}`}>
+              <Icon name={n.icon} />
+              <span>{n.label}</span>
+            </Link>
+          )
+        )}
       </nav>
 
       <div className="absolute bottom-6 left-6 text-slate-400">

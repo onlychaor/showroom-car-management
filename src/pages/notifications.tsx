@@ -16,7 +16,11 @@ export default function NotificationsPage() {
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setItems(data || []))
+    fetch('/api/contacts')
+      .then((r) => r.json())
+      .then((data) => {
+        setItems(Array.isArray(data) ? data : [])
+      })
   }, [])
 
   const today = useMemo(() => items.filter((i) => isSameDay(i.scheduled_at, new Date())), [items])
@@ -37,7 +41,11 @@ export default function NotificationsPage() {
   }, [items])
 
   function refresh() {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setItems(data || []))
+    fetch('/api/contacts')
+      .then((r) => r.json())
+      .then((data) => {
+        setItems(Array.isArray(data) ? data : [])
+      })
     setShowForm(false)
     setEditing(null)
   }

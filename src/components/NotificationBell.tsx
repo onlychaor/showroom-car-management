@@ -67,12 +67,19 @@ export default function NotificationBell() {
       </button>
 
       {open && pos && (
-        <div
-          role="dialog"
-          aria-label="Notifications"
-          style={{ position: 'fixed', top: pos.top, left: pos.left, width: 384, zIndex: 9999 }}
-          className="bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white border border-slate-800"
-        >
+        <>
+          <div
+            aria-hidden
+            onClick={() => setOpen(false)}
+            style={{ position: 'fixed', inset: 0, zIndex: 9990 }}
+            className="bg-black/50 backdrop-blur-sm"
+          />
+          <div
+            role="dialog"
+            aria-label="Notifications"
+            style={{ position: 'fixed', top: pos.top, left: pos.left, width: 384, zIndex: 9999 }}
+            className="bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white border border-slate-800"
+          >
           <div className="flex items-center justify-between mb-3">
             <div className="font-medium text-white">Xe sắp hết hạn</div>
             <div className="text-xs text-slate-300">{urgent.length} sắp hết hạn</div>

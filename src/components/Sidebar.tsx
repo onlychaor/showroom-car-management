@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useAuth } from '../lib/auth'
 
@@ -61,7 +62,12 @@ export const Sidebar = () => {
   const { pathname } = useRouter()
 
   return (
-    <aside className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative">
+    <motion.aside
+      className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative"
+      initial={{ x: -10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.28 }}
+    >
       <div className="mb-8">
         <div className="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center font-bold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>AD</div>
         <div className="mt-3">
@@ -124,7 +130,7 @@ export const Sidebar = () => {
           </div>
         </div>
       )}
-    </aside>
+    </motion.aside>
   )
 }
 

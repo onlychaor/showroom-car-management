@@ -13,10 +13,10 @@ export default function SemiDonut({ value = 42 }: { value?: number }) {
           <path
             d={`M ${-radius} 0 A ${radius} ${radius} 0 0 1 ${radius} 0`}
             fill="none"
-            stroke="#000"
+            stroke="#0ea5e9"
             strokeWidth={stroke}
             strokeLinecap="round"
-            opacity={0.08}
+            opacity={0.15}
           />
           <path
             d={`M ${-radius} 0 A ${radius} ${radius} 0 0 1 ${radius} 0`}
@@ -30,9 +30,9 @@ export default function SemiDonut({ value = 42 }: { value?: number }) {
         </g>
         <defs>
           <linearGradient id="grad1" x1="0" x2="1">
-            <stop offset="0%" stopColor="#ffd9b3" />
-            <stop offset="60%" stopColor="#ffb27a" />
-            <stop offset="100%" stopColor="#ffb27a" />
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="60%" stopColor="#7c3aed" />
+            <stop offset="100%" stopColor="#ec4899" />
           </linearGradient>
         </defs>
       </svg>

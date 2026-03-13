@@ -60,6 +60,9 @@ export const Sidebar = () => {
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const { pathname } = useRouter()
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    '/users': false, // 'Quản lý' collapsed by default
+  })
 
   return (
     <motion.aside
@@ -80,18 +83,33 @@ export const Sidebar = () => {
         {nav.map((n) =>
           n.children ? (
             <div key={n.href}>
-              <div className="px-3 py-2 rounded text-slate-300 flex items-center">
-                <Icon name={n.icon} />
-                <span className="font-medium">{n.label}</span>
+              <div
+                className="px-3 py-2 rounded text-slate-300 flex items-center justify-between cursor-pointer"
+                onClick={() => setOpenGroups((s) => ({ ...s, [n.href]: !s[n.href] }))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') setOpenGroups((s) => ({ ...s, [n.href]: !s[n.href] }))
+                }}
+              >
+                <div className="flex items-center">
+                  <Icon name={n.icon} />
+                  <span className="font-medium">{n.label}</span>
+                </div>
+                <svg className={`w-4 h-4 text-slate-400 transform transition-transform ${openGroups[n.href] ? 'rotate-90' : ''}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                  <path fillRule="evenodd" d="M6 4l6 6-6 6V4z" clipRule="evenodd" />
+                </svg>
               </div>
-              <div className="ml-4 mt-1 space-y-1">
-                {n.children.map((c: any) => (
-                  <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
-                    <Icon name={c.icon} />
-                    <span className="text-sm">{c.label}</span>
-                  </Link>
-                ))}
-              </div>
+              {openGroups[n.href] && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {n.children.map((c: any) => (
+                    <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
+                      <Icon name={c.icon} />
+                      <span className="text-sm">{c.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <Link key={n.href} href={n.href} className={`px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === n.href ? 'bg-[#0b1b2b]' : ''}`}>

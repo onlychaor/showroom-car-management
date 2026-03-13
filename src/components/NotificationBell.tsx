@@ -98,6 +98,7 @@ export default function NotificationBell() {
             ))}
           </ul>
         </div>
+          </>
       )}
     </div>
   )

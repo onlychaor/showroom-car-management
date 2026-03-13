@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+// Layout now provided at app level
 import { useEffect, useMemo, useState } from 'react'
 import NotificationCard from '../components/NotificationCard'
 import Modal from '../components/Modal'

@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+// Layout now provided at app level
 import { useEffect, useState } from 'react'
 import CarForm from '../components/CarForm'
 import Modal from '../components/Modal'

@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+// Layout now provided at app level
 import { useEffect, useMemo, useState } from 'react'
 import Modal from '../components/Modal'
 import ContactForm from '../components/ContactForm'

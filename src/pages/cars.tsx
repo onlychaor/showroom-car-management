@@ -2,6 +2,7 @@ import Layout from '../components/Layout'
 import { useEffect, useState } from 'react'
 import CarForm from '../components/CarForm'
 import Modal from '../components/Modal'
+import Button from '../components/ui/Button'
 
 type Car = { id: string; name: string; color?: string; price?: string }
 
@@ -33,7 +34,7 @@ export default function CarsPage() {
       <div className="flex items-center justify-between mb-3">
         <div />
         <div>
-          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add car</button>
+          <Button onClick={() => { setEditing(null); setShowForm(true) }} variant="primary">Add car</Button>
         </div>
       </div>
 
@@ -54,7 +55,7 @@ export default function CarsPage() {
                 <td>{c.color}</td>
                 <td>{c.price}</td>
                 <td className="text-right">
-                  <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-pink-300 mr-3">Edit</button>
+                  <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
                   <button onClick={() => remove(c.id)} className="text-sm text-red-400">Delete</button>
                 </td>
               </tr>

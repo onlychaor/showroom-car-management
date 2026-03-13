@@ -2,6 +2,7 @@ import Layout from '../components/Layout'
 import { useEffect, useState } from 'react'
 import ContactForm from '../components/ContactForm'
 import Modal from '../components/Modal'
+import Button from '../components/ui/Button'
 
 type Contact = { id: string; title: string; email?: string; status?: string }
 
@@ -42,7 +43,7 @@ export default function ContactsPage() {
         <h1 className="text-2xl font-semibold">Contacts</h1>
         <div className="flex items-center gap-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." className="px-3 py-2 rounded bg-white/5" />
-          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add contact</button>
+          <Button onClick={() => { setEditing(null); setShowForm(true) }} variant="primary">Add contact</Button>
         </div>
       </div>
 
@@ -63,7 +64,7 @@ export default function ContactsPage() {
                 <td>{c.email}</td>
                 <td>{c.status}</td>
                 <td className="text-right">
-                  <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-pink-300 mr-3">Edit</button>
+                  <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
                   <button onClick={() => setShowConfirm({ id: c.id, title: c.title })} className="text-sm text-red-400">Delete</button>
                 </td>
               </tr>
@@ -80,7 +81,7 @@ export default function ContactsPage() {
         <div className="mb-4">Bạn muốn xoá contact <strong>{showConfirm?.title}</strong>?</div>
         <div className="flex justify-end gap-2">
           <button onClick={() => setShowConfirm(null)} className="px-3 py-1 border rounded">Huỷ</button>
-          <button onClick={() => { if (showConfirm) remove(showConfirm.id); }} className="px-3 py-1 bg-pink-400 rounded text-white">Xoá</button>
+          <Button onClick={() => { if (showConfirm) remove(showConfirm.id); }} variant="primary" size="sm">Xoá</Button>
         </div>
       </Modal>
     </Layout>

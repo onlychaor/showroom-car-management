@@ -3,24 +3,30 @@ import { useEffect, useState } from 'react'
 import ContactForm from '../components/ContactForm'
 import Modal from '../components/Modal'
 import Button from '../components/ui/Button'
+import useDebounce from '../hooks/useDebounce'
+import Skeleton from '../components/ui/Skeleton'
 
 type Contact = { id: string; title: string; email?: string; status?: string }
 
 export default function ContactsPage() {
   const [items, setItems] = useState<Contact[]>([])
+  const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState<{ id: string; title?: string } | null>(null)
   const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 200)
 
   useEffect(() => {
     refresh()
   }, [])
 
   function refresh() {
+    setLoading(true)
     fetch('/api/contacts')
       .then((r) => r.json())
       .then((data) => setItems(Array.isArray(data) ? data : []))
+      .finally(() => setLoading(false))
     setShowForm(false)
     setEditing(null)
   }
@@ -33,7 +39,7 @@ export default function ContactsPage() {
   const filtered = (items || []).filter((c) => {
     const title = (c?.title || '').toString().toLowerCase()
     const email = (c?.email || '').toString().toLowerCase()
-    const q = (query || '').toLowerCase()
+    const q = (debouncedQuery || '').toLowerCase()
     return title.includes(q) || email.includes(q)
   })
 
@@ -48,29 +54,37 @@ export default function ContactsPage() {
       </div>
 
       <div className="card-bg p-4 rounded">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-slate-400">
-              <th className="py-2">Title</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((c) => (
-              <tr key={c.id} className="border-t border-slate-800">
-                <td className="py-3">{c.title}</td>
-                <td>{c.email}</td>
-                <td>{c.status}</td>
-                <td className="text-right">
-                  <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
-                  <button onClick={() => setShowConfirm({ id: c.id, title: c.title })} className="text-sm text-red-400">Delete</button>
-                </td>
+        {loading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-slate-400">
+                <th className="py-2">Title</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((c) => (
+                <tr key={c.id} className="border-t border-slate-800">
+                  <td className="py-3">{c.title}</td>
+                  <td>{c.email}</td>
+                  <td>{c.status}</td>
+                  <td className="text-right">
+                    <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
+                    <button onClick={() => setShowConfirm({ id: c.id, title: c.title })} className="text-sm text-red-400">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <Modal open={showForm} title={editing ? 'Edit contact' : 'New contact'} onClose={() => setShowForm(false)}>

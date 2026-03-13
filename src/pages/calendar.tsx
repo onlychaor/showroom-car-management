@@ -23,9 +23,11 @@ export default function CalendarPage() {
   const [selected, setSelected] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setEvents(Array.isArray(data) ? data : []))
+    setLoading(true)
+    fetch('/api/contacts').then((r) => r.json()).then((data) => setEvents(Array.isArray(data) ? data : [])).finally(() => setLoading(false))
   }, [])
 
   const days = useMemo(() => {
@@ -101,25 +103,32 @@ export default function CalendarPage() {
         <div className="col-span-3">
           <div className="card-bg p-4 rounded mb-4">
             <div className="mb-2 font-medium">Mini calendar</div>
-            <div className="text-sm text-slate-400">Today: {new Date().toDateString()}</div>
+            <div className="text-sm text-slate-400">Today: {new Date().toISOString().slice(0,10)}</div>
           </div>
 
           <div className="card-bg p-4 rounded">
             <div className="mb-2 font-medium">Upcoming</div>
-          <div className="space-y-3">
-              {(Array.isArray(events) ? events : [])
-                .filter((e) => (!query || (String(e.title || '').toLowerCase().includes(query.toLowerCase()))))
-                .sort((a: any, b: any) => new Date(a.scheduled_at || a.created_at).getTime() - new Date(b.scheduled_at || b.created_at).getTime())
-                .slice(0, 8)
-                .map((e: any) => (
-                  <div key={e.id} className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{e.title}</div>
-                      <div className="text-xs text-slate-400">{new Date(e.scheduled_at || e.created_at).toLocaleString()}</div>
+            <div className="space-y-3">
+              {loading ? (
+                <>
+                  <div className="flex items-center justify-between"><div><div className="font-medium"><span className="inline-block w-28 h-4 bg-white/6 rounded" /></div><div className="text-xs text-slate-400 mt-1"><span className="inline-block w-20 h-3 bg-white/6 rounded" /></div></div><div className="text-xs text-slate-300"><span className="inline-block w-12 h-3 bg-white/6 rounded" /></div></div>
+                  <div className="flex items-center justify-between"><div><div className="font-medium"><span className="inline-block w-28 h-4 bg-white/6 rounded" /></div><div className="text-xs text-slate-400 mt-1"><span className="inline-block w-20 h-3 bg-white/6 rounded" /></div></div><div className="text-xs text-slate-300"><span className="inline-block w-12 h-3 bg-white/6 rounded" /></div></div>
+                </>
+              ) : (
+                (Array.isArray(events) ? events : [])
+                  .filter((e) => (!query || (String(e.title || '').toLowerCase().includes(query.toLowerCase()))))
+                  .sort((a: any, b: any) => new Date(a.scheduled_at || a.created_at).getTime() - new Date(b.scheduled_at || b.created_at).getTime())
+                  .slice(0, 8)
+                  .map((e: any) => (
+                    <div key={e.id} className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">{e.title}</div>
+                        <div className="text-xs text-slate-400">{new Date(e.scheduled_at || e.created_at).toISOString().slice(0,16).replace('T',' ')}</div>
+                      </div>
+                      <div className="text-xs text-slate-300">{e.status}</div>
                     </div>
-                    <div className="text-xs text-slate-300">{e.status}</div>
-                  </div>
-                ))}
+                  ))
+              )}
             </div>
           </div>
         </div>

@@ -1,11 +1,15 @@
 import Layout from '../components/Layout'
 import { useEffect, useState } from 'react'
 import StatCard from '../components/StatCard'
-import SemiDonut from '../components/SemiDonut'
-import NotificationBell from '../components/NotificationBell'
+import dynamic from 'next/dynamic'
+import Skeleton from '../components/ui/Skeleton'
+
+const SemiDonut = dynamic(() => import('../components/SemiDonut'), { ssr: false })
+const NotificationBell = dynamic(() => import('../components/NotificationBell'), { ssr: false, loading: () => <div style={{width:36,height:36}}><Skeleton className="w-9 h-9 rounded-full" /></div> })
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ users: 0, cars: 0, contacts: 0 })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
@@ -18,6 +22,7 @@ export default function Dashboard() {
           contacts: json?.totals?.contacts || 0,
         })
         setReport(json)
+        setLoading(false)
       } catch (err) {
         // fallback to previous approach
         const [u, c, co] = await Promise.all([
@@ -26,6 +31,7 @@ export default function Dashboard() {
           fetch('/api/contacts').then((r) => r.json()),
         ])
         setStats({ users: (u && u.length) || 0, cars: (c && c.length) || 0, contacts: (co && co.length) || 0 })
+        setLoading(false)
       }
     }
     load()
@@ -95,7 +101,7 @@ export default function Dashboard() {
                 <div style={{ width: 380 }}>
                   <SemiDonut value={Math.round((stats.contacts / Math.max(1, stats.cars + stats.contacts + stats.users)) * 100)} />
                   <div className="text-center mt-[-56px]">
-                    <div className="text-3xl font-bold">{stats.contacts}</div>
+                    <div className="text-3xl font-bold">{loading ? <Skeleton className="w-24 h-8 rounded" /> : stats.contacts}</div>
                     <div className="text-sm text-slate-400">Contact</div>
                   </div>
                 </div>

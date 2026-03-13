@@ -1,6 +1,7 @@
+import React from 'react'
 import { motion } from 'framer-motion'
 
-export default function StatCard({ title, value, children }: { title: string; value: string | number; children?: React.ReactNode }) {
+function StatCard({ title, value, children }: { title: string; value: string | number; children?: React.ReactNode }) {
   return (
     <motion.div
       className="card-bg p-4 rounded-lg shadow min-h-[100px]"
@@ -17,4 +18,4 @@ export default function StatCard({ title, value, children }: { title: string; va
     </motion.div>
   )
 }
-
+export default React.memo(StatCard)

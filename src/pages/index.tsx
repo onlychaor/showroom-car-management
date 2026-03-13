@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import StatCard from '../components/StatCard'
 import dynamic from 'next/dynamic'
 import Skeleton from '../components/ui/Skeleton'
+import Button from '../components/ui/Button'
 
 const SemiDonut = dynamic(() => import('../components/SemiDonut'), { ssr: false })
 const NotificationBell = dynamic(() => import('../components/NotificationBell'), { ssr: false, loading: () => <div style={{width:36,height:36}}><Skeleton className="w-9 h-9 rounded-full" /></div> })
@@ -10,6 +11,25 @@ const NotificationBell = dynamic(() => import('../components/NotificationBell'),
 export default function Dashboard() {
   const [stats, setStats] = useState({ users: 0, cars: 0, contacts: 0 })
   const [loading, setLoading] = useState(true)
+  const [showRecentContacts, setShowRecentContacts] = useState<boolean>(() => {
+    try { return JSON.parse(localStorage.getItem('showRecentContacts') ?? 'true') } catch { return true }
+  })
+  const [showRecentUsers, setShowRecentUsers] = useState<boolean>(() => {
+    try { return JSON.parse(localStorage.getItem('showRecentUsers') ?? 'true') } catch { return true }
+  })
+  const [showPopularCars, setShowPopularCars] = useState<boolean>(() => {
+    try { return JSON.parse(localStorage.getItem('showPopularCars') ?? 'true') } catch { return true }
+  })
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === '1') { setShowRecentContacts(s => { const v = !s; localStorage.setItem('showRecentContacts', JSON.stringify(v)); return v }) }
+      if (e.key === '2') { setShowRecentUsers(s => { const v = !s; localStorage.setItem('showRecentUsers', JSON.stringify(v)); return v }) }
+      if (e.key === '3') { setShowPopularCars(s => { const v = !s; localStorage.setItem('showPopularCars', JSON.stringify(v)); return v }) }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -48,6 +68,12 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-3">
           <div className="bg-white/5 px-3 py-2 rounded text-sm text-slate-300">Hôm nay ▾</div>
+          <div className="flex items-center gap-2">
+            <div className="text-xs text-slate-400">Shortcuts:</div>
+            <Button size="sm" variant={showRecentContacts ? 'primary' : 'ghost'} onClick={() => { setShowRecentContacts(s => { const v = !s; localStorage.setItem('showRecentContacts', JSON.stringify(v)); return v }) }}>1</Button>
+            <Button size="sm" variant={showRecentUsers ? 'primary' : 'ghost'} onClick={() => { setShowRecentUsers(s => { const v = !s; localStorage.setItem('showRecentUsers', JSON.stringify(v)); return v }) }}>2</Button>
+            <Button size="sm" variant={showPopularCars ? 'primary' : 'ghost'} onClick={() => { setShowPopularCars(s => { const v = !s; localStorage.setItem('showPopularCars', JSON.stringify(v)); return v }) }}>3</Button>
+          </div>
           <NotificationBell />
         </div>
       </div>
@@ -108,42 +134,48 @@ export default function Dashboard() {
               </div>
               <div>
                 <div className="grid grid-rows-3 gap-3 h-full">
-                  <div className="card-bg p-3 rounded">
-                    <div className="text-sm text-slate-400 mb-2">Contact gần đây</div>
-                    <div className="space-y-2 text-sm">
-                      {(report?.recent || []).slice(0, 4).map((r: any) => (
-                        <div key={r.id} className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium">{r.title}</div>
-                            <div className="text-xs text-slate-400">{r.user?.name} • {r.car?.name}</div>
+                  {showRecentContacts && (
+                    <div className="card-bg p-3 rounded">
+                      <div className="text-sm text-slate-400 mb-2">Contact gần đây</div>
+                      <div className="space-y-2 text-sm">
+                        {(report?.recent || []).slice(0, 4).map((r: any) => (
+                          <div key={r.id} className="flex items-center justify-between">
+                            <div>
+                              <div className="font-medium">{r.title}</div>
+                              <div className="text-xs text-slate-400">{r.user?.name} • {r.car?.name}</div>
+                            </div>
+                            <div className="text-xs text-slate-300">{r.status}</div>
                           </div>
-                          <div className="text-xs text-slate-300">{r.status}</div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-bg p-3 rounded">
-                    <div className="text-sm text-slate-400 mb-2">User gần đây</div>
-                    <div className="space-y-2 text-sm">
-                      {(report?.recent || []).slice(0, 3).map((r: any) => (
-                        <div key={r.id} className="flex items-center justify-between">
-                          <div className="text-sm">{r.user?.name}</div>
-                          <div className="text-xs text-slate-400">{r.user?.email}</div>
-                        </div>
-                      ))}
+                  )}
+                  {showRecentUsers && (
+                    <div className="card-bg p-3 rounded">
+                      <div className="text-sm text-slate-400 mb-2">User gần đây</div>
+                      <div className="space-y-2 text-sm">
+                        {(report?.recent || []).slice(0, 3).map((r: any) => (
+                          <div key={r.id} className="flex items-center justify-between">
+                            <div className="text-sm">{r.user?.name}</div>
+                            <div className="text-xs text-slate-400">{r.user?.email}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-bg p-3 rounded">
-                    <div className="text-sm text-slate-400 mb-2">Car phổ biến</div>
-                    <div className="space-y-2 text-sm">
-                      {(report?.recent || []).slice(0, 3).map((r: any) => (
-                        <div key={r.id} className="flex items-center justify-between">
-                          <div className="text-sm">{r.car?.name}</div>
-                          <div className="text-xs text-slate-400">800tr</div>
-                        </div>
-                      ))}
+                  )}
+                  {showPopularCars && (
+                    <div className="card-bg p-3 rounded">
+                      <div className="text-sm text-slate-400 mb-2">Car phổ biến</div>
+                      <div className="space-y-2 text-sm">
+                        {(report?.recent || []).slice(0, 3).map((r: any) => (
+                          <div key={r.id} className="flex items-center justify-between">
+                            <div className="text-sm">{r.car?.name}</div>
+                            <div className="text-xs text-slate-400">800tr</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

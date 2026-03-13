@@ -155,7 +155,7 @@ export default function Dashboard() {
                 <div key={r.id} className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">{r.title}</div>
-                    <div className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString()}</div>
+                    <div className="text-xs text-slate-400">{new Date(r.created_at).toISOString().slice(0,10)}</div>
                   </div>
                   <div className="text-xs text-slate-300">{r.status}</div>
                 </div>

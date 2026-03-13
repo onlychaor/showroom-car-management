@@ -50,6 +50,18 @@ export default function CalendarPage() {
     setShowForm(true)
   }
 
+  function weekdayShort(d: Date) {
+    // Use deterministic short names to avoid locale differences between server and client
+    const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
+    return names[d.getDay()] || d.toString().slice(0,3)
+  }
+
+  function formatDateTimeISO(d: string | Date) {
+    const dt = new Date(d)
+    // YYYY-MM-DD HH:MM
+    return dt.toISOString().replace('T', ' ').slice(0, 16)
+  }
+
   function refresh() {
     fetch('/api/contacts').then((r) => r.json()).then(setEvents)
     setShowForm(false)
@@ -71,7 +83,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7 gap-2 mb-3">
             {days.map((d) => (
               <div key={d.toDateString()} className="text-center py-2 border-b border-slate-800">
-                <div className="font-medium">{d.toLocaleString(undefined, { weekday: 'short' })}</div>
+                <div className="font-medium">{weekdayShort(d)}</div>
                 <div className="text-sm text-slate-400">{d.getDate()}</div>
               </div>
             ))}
@@ -100,7 +112,7 @@ export default function CalendarPage() {
         <div className="col-span-3">
           <div className="card-bg p-4 rounded mb-4">
             <div className="mb-2 font-medium">Mini calendar</div>
-            <div className="text-sm text-slate-400">Today: {new Date().toDateString()}</div>
+            <div className="text-sm text-slate-400">Today: {new Date().toISOString().slice(0,10)}</div>
           </div>
 
           <div className="card-bg p-4 rounded">
@@ -114,7 +126,7 @@ export default function CalendarPage() {
                   <div key={e.id} className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">{e.title}</div>
-                      <div className="text-xs text-slate-400">{new Date(e.scheduled_at || e.created_at).toLocaleString()}</div>
+                      <div className="text-xs text-slate-400">{formatDateTimeISO(e.scheduled_at || e.created_at)}</div>
                     </div>
                     <div className="text-xs text-slate-300">{e.status}</div>
                   </div>

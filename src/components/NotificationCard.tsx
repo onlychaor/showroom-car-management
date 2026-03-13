@@ -18,7 +18,7 @@ export default function NotificationCard({ item, onEdit, onDelete }: { item: any
 
           <div className="flex items-center gap-2 text-xs">
             <span className="px-2 py-1 bg-slate-900 rounded text-primary">Mức độ: Khẩn cấp</span>
-            {item.scheduled_at && <span className="px-2 py-1 bg-slate-900 rounded text-sky-300">Duration: {new Date(item.scheduled_at).toLocaleDateString()}</span>}
+            {item.scheduled_at && <span className="px-2 py-1 bg-slate-900 rounded text-sky-300">Duration: {new Date(item.scheduled_at).toISOString().slice(0,10)}</span>}
             {remaining !== null && <span className="px-2 py-1 bg-slate-900 rounded text-red-400">{remaining <= 0 ? `Đã quá hạn ${Math.abs(remaining)}d` : `Còn ${remaining} ngày`}</span>}
           </div>
         </div>

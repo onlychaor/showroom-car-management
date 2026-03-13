@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 type CarItem = { id: string; name: string; color?: string; price?: string; daysLeft?: number }
 
@@ -13,7 +13,7 @@ function daysLeftFor(name: string) {
 export default function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<CarItem[]>([])
-  const ref = React.useRef<HTMLDivElement | null>(null)
+  const ref = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     async function load() {

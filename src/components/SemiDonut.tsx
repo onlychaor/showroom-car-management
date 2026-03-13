@@ -32,7 +32,7 @@ export default function SemiDonut({ value = 42 }: { value?: number }) {
           <linearGradient id="grad1" x1="0" x2="1">
             <stop offset="0%" stopColor="#ffd9b3" />
             <stop offset="60%" stopColor="#ffb27a" />
-            <stop offset="100%" stopColor="#ff7a00" />
+            <stop offset="100%" stopColor="#ffb27a" />
           </linearGradient>
         </defs>
       </svg>

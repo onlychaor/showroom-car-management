@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useAuth } from '../lib/auth'
@@ -60,9 +60,19 @@ export const Sidebar = () => {
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const { pathname } = useRouter()
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    '/users': false, // 'Quản lý' collapsed by default
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem('sidebarOpenGroups') : null
+      if (raw) return JSON.parse(raw)
+    } catch (e) {}
+    return { '/users': false }
   })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups))
+    } catch (e) {}
+  }, [openGroups])
 
   return (
     <motion.aside

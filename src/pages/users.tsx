@@ -11,11 +11,11 @@ type User = { id: string; name: string; email: string; phone?: string }
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
-  const debouncedQuery = useDebounce(query, 200)
   const [editing, setEditing] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState<{ id: string; name?: string } | null>(null)
   const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 200)
 
   useEffect(() => {
     refresh()

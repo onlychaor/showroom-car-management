@@ -13,6 +13,7 @@ function daysLeftFor(name: string) {
 export default function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<CarItem[]>([])
+  const ref = React.useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -32,38 +33,43 @@ export default function NotificationBell() {
     load()
   }, [])
 
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!open) return
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [open])
+
   const urgent = items.filter((i) => i.daysLeft !== undefined && i.daysLeft <= 3)
 
   return (
-    <div className="relative">
+    <div className="relative" ref={ref}>
       <button onClick={() => setOpen(!open)} className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 z-40">
         <span role="img" aria-label="bell">🔔</span>
         {urgent.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center text-white">{urgent.length}</span>}
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setOpen(false)} />
-
-          <div className="absolute top-16 right-6 w-96 bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white z-60 border border-slate-800">
-            <div className="flex items-center justify-between mb-3">
-              <div className="font-medium text-white">Xe sắp hết hạn</div>
-              <div className="text-xs text-slate-300">{urgent.length} sắp hết hạn</div>
-            </div>
-            <ul className="space-y-2 max-h-72 overflow-auto">
-              {items.map((it) => (
-                <li key={it.id} className="flex items-center justify-between border border-transparent hover:border-slate-700 p-2 rounded">
-                  <div>
-                    <div className="font-semibold text-white">{it.name}</div>
-                    <div className="text-xs text-slate-400">{it.color || ''} • {it.price || ''}</div>
-                  </div>
-                  <div className={`text-sm font-medium ${it.daysLeft !== undefined && it.daysLeft <= 0 ? 'text-red-400' : it.daysLeft !== undefined && it.daysLeft <= 3 ? 'text-yellow-300' : 'text-slate-300'}`}>
-                    {it.daysLeft !== undefined ? (it.daysLeft <= 0 ? `Đã quá hạn ${Math.abs(it.daysLeft)} ngày` : `Còn ${it.daysLeft} ngày`) : '-'}
-                  </div>
-                </li>
-              ))}
-            </ul>
+        <div className="absolute top-12 right-0 w-96 bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white z-60 border border-slate-800">
+          <div className="flex items-center justify-between mb-3">
+            <div className="font-medium text-white">Xe sắp hết hạn</div>
+            <div className="text-xs text-slate-300">{urgent.length} sắp hết hạn</div>
           </div>
+          <ul className="space-y-2 max-h-72 overflow-auto">
+            {items.map((it) => (
+              <li key={it.id} className="flex items-center justify-between border border-transparent hover:border-slate-700 p-2 rounded">
+                <div>
+                  <div className="font-semibold text-white">{it.name}</div>
+                  <div className="text-xs text-slate-400">{it.color || ''} • {it.price || ''}</div>
+                </div>
+                <div className={`text-sm font-medium ${it.daysLeft !== undefined && it.daysLeft <= 0 ? 'text-red-400' : it.daysLeft !== undefined && it.daysLeft <= 3 ? 'text-yellow-300' : 'text-slate-300'}`}>
+                  {it.daysLeft !== undefined ? (it.daysLeft <= 0 ? `Đã quá hạn ${Math.abs(it.daysLeft)} ngày` : `Còn ${it.daysLeft} ngày`) : '-'}
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

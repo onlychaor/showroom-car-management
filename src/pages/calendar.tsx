@@ -1,7 +1,8 @@
-import Layout from '../components/Layout'
+// Layout now provided at app level
 import { useEffect, useMemo, useState } from 'react'
 import Modal from '../components/Modal'
 import ContactForm from '../components/ContactForm'
+import Button from '../components/ui/Button'
 
 function startOfWeek(d: Date) {
   const date = new Date(d)
@@ -22,9 +23,11 @@ export default function CalendarPage() {
   const [selected, setSelected] = useState<any | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setEvents(Array.isArray(data) ? data : []))
+    setLoading(true)
+    fetch('/api/contacts').then((r) => r.json()).then((data) => setEvents(Array.isArray(data) ? data : [])).finally(() => setLoading(false))
   }, [])
 
   const days = useMemo(() => {
@@ -50,18 +53,6 @@ export default function CalendarPage() {
     setShowForm(true)
   }
 
-  function weekdayShort(d: Date) {
-    // Use deterministic short names to avoid locale differences between server and client
-    const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
-    return names[d.getDay()] || d.toString().slice(0,3)
-  }
-
-  function formatDateTimeISO(d: string | Date) {
-    const dt = new Date(d)
-    // YYYY-MM-DD HH:MM
-    return dt.toISOString().replace('T', ' ').slice(0, 16)
-  }
-
   function refresh() {
     fetch('/api/contacts').then((r) => r.json()).then(setEvents)
     setShowForm(false)
@@ -69,12 +60,12 @@ export default function CalendarPage() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Schedular</h1>
         <div className="flex items-center gap-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." className="px-3 py-2 rounded bg-white/5" />
-          <button onClick={() => { setSelected(null); setShowForm(true) }} className="px-4 py-2 bg-primary rounded">Add +</button>
+          <Button onClick={() => { setSelected(null); setShowForm(true) }} variant="primary">Add +</Button>
         </div>
       </div>
 
@@ -83,7 +74,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7 gap-2 mb-3">
             {days.map((d) => (
               <div key={d.toDateString()} className="text-center py-2 border-b border-slate-800">
-                <div className="font-medium">{weekdayShort(d)}</div>
+                <div className="font-medium">{d.toLocaleString(undefined, { weekday: 'short' })}</div>
                 <div className="text-sm text-slate-400">{d.getDate()}</div>
               </div>
             ))}
@@ -94,7 +85,7 @@ export default function CalendarPage() {
               const items = eventsByDay[key] || []
               return (
                 <div key={key} className="min-h-[240px] border border-slate-800 rounded p-2">
-                  <button onClick={() => openNewFor(d)} className="text-xs text-slate-400 mb-2">+ add</button>
+                  <button type="button" onClick={() => openNewFor(d)} className="text-xs text-slate-400 mb-2">+ add</button>
                   <div className="space-y-2">
                     {items.map((it: any) => (
                       <div key={it.id} className="p-2 rounded border border-slate-700 bg-[#071428] hover:bg-[#0b1724] cursor-pointer" onClick={() => { setSelected(it); setShowForm(true) }}>
@@ -117,20 +108,27 @@ export default function CalendarPage() {
 
           <div className="card-bg p-4 rounded">
             <div className="mb-2 font-medium">Upcoming</div>
-          <div className="space-y-3">
-              {(Array.isArray(events) ? events : [])
-                .filter((e) => (!query || (String(e.title || '').toLowerCase().includes(query.toLowerCase()))))
-                .sort((a: any, b: any) => new Date(a.scheduled_at || a.created_at).getTime() - new Date(b.scheduled_at || b.created_at).getTime())
-                .slice(0, 8)
-                .map((e: any) => (
-                  <div key={e.id} className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{e.title}</div>
-                      <div className="text-xs text-slate-400">{formatDateTimeISO(e.scheduled_at || e.created_at)}</div>
+            <div className="space-y-3">
+              {loading ? (
+                <>
+                  <div className="flex items-center justify-between"><div><div className="font-medium"><span className="inline-block w-28 h-4 bg-white/6 rounded" /></div><div className="text-xs text-slate-400 mt-1"><span className="inline-block w-20 h-3 bg-white/6 rounded" /></div></div><div className="text-xs text-slate-300"><span className="inline-block w-12 h-3 bg-white/6 rounded" /></div></div>
+                  <div className="flex items-center justify-between"><div><div className="font-medium"><span className="inline-block w-28 h-4 bg-white/6 rounded" /></div><div className="text-xs text-slate-400 mt-1"><span className="inline-block w-20 h-3 bg-white/6 rounded" /></div></div><div className="text-xs text-slate-300"><span className="inline-block w-12 h-3 bg-white/6 rounded" /></div></div>
+                </>
+              ) : (
+                (Array.isArray(events) ? events : [])
+                  .filter((e) => (!query || (String(e.title || '').toLowerCase().includes(query.toLowerCase()))))
+                  .sort((a: any, b: any) => new Date(a.scheduled_at || a.created_at).getTime() - new Date(b.scheduled_at || b.created_at).getTime())
+                  .slice(0, 8)
+                  .map((e: any) => (
+                    <div key={e.id} className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">{e.title}</div>
+                        <div className="text-xs text-slate-400">{new Date(e.scheduled_at || e.created_at).toISOString().slice(0,16).replace('T',' ')}</div>
+                      </div>
+                      <div className="text-xs text-slate-300">{e.status}</div>
                     </div>
-                    <div className="text-xs text-slate-300">{e.status}</div>
-                  </div>
-                ))}
+                  ))
+              )}
             </div>
           </div>
         </div>
@@ -139,7 +137,7 @@ export default function CalendarPage() {
       <Modal open={showForm} title={selected?.id ? 'Edit Event' : 'New Event'} onClose={() => setShowForm(false)}>
         <ContactForm initial={selected} onSaved={refresh} />
       </Modal>
-    </Layout>
+    </>
   )
 }
 

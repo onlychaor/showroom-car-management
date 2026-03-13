@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useAuth } from '../lib/auth'
 
@@ -59,11 +60,29 @@ export const Sidebar = () => {
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const { pathname } = useRouter()
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem('sidebarOpenGroups') : null
+      if (raw) return JSON.parse(raw)
+    } catch (e) {}
+    return { '/users': false }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sidebarOpenGroups', JSON.stringify(openGroups))
+    } catch (e) {}
+  }, [openGroups])
 
   return (
-    <aside className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative">
+    <motion.aside
+      className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative"
+      initial={{ x: -10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.28 }}
+    >
       <div className="mb-8">
-        <div className="w-12 h-12 rounded bg-primary flex items-center justify-center font-bold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>AD</div>
+        <div className="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center font-bold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>AD</div>
         <div className="mt-3">
           <div className="font-semibold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>{user?.name || (user?.email ? `Chào, ${user.email.split('@')[0]}` : 'Chào, John')}</div>
           <div className="text-xs text-slate-400">{user?.email || 'Admin@gmail.com'}</div>
@@ -74,11 +93,24 @@ export const Sidebar = () => {
         {nav.map((n) =>
           n.children ? (
             <div key={n.href}>
-              <div className="px-3 py-2 rounded text-slate-300 flex items-center">
-                <Icon name={n.icon} />
-                <span className="font-medium">{n.label}</span>
+              <div
+                className="px-3 py-2 rounded text-slate-300 flex items-center justify-between cursor-pointer"
+                onClick={() => setOpenGroups((s) => ({ ...s, [n.href]: !s[n.href] }))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') setOpenGroups((s) => ({ ...s, [n.href]: !s[n.href] }))
+                }}
+              >
+                <div className="flex items-center">
+                  <Icon name={n.icon} />
+                  <span className="font-medium">{n.label}</span>
+                </div>
+                <svg className={`w-4 h-4 text-slate-400 transform transition-transform ${openGroups[n.href] ? 'rotate-90' : ''}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                  <path fillRule="evenodd" d="M6 4l6 6-6 6V4z" clipRule="evenodd" />
+                </svg>
               </div>
-              <div className="ml-4 mt-1 space-y-1">
+              <div className={`ml-4 mt-1 space-y-1 ${openGroups[n.href] ? '' : 'hidden'}`} aria-hidden={!openGroups[n.href]}>
                 {n.children.map((c: any) => (
                   <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
                     <Icon name={c.icon} />
@@ -97,7 +129,7 @@ export const Sidebar = () => {
       </nav>
 
       <div className="absolute bottom-6 left-6 text-slate-400">
-        <button onClick={signOut} className="text-sm">Logout</button>
+        <button type="button" onClick={signOut} className="text-sm">Logout</button>
       </div>
       {showProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -105,7 +137,7 @@ export const Sidebar = () => {
           <div className="relative bg-[#071428] rounded-xl shadow-2xl p-6 w-full max-w-md text-white border border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div className="text-lg font-semibold">Chỉnh sửa hồ sơ</div>
-              <button onClick={() => setShowProfile(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button type="button" onClick={() => setShowProfile(false)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <div className="space-y-3">
               <label className="block">
@@ -117,14 +149,14 @@ export const Sidebar = () => {
                 <input value={emailInput} onChange={(e) => setEmailInput(e.target.value)} className="w-full px-3 py-2 rounded bg-transparent border border-slate-700" />
               </label>
               <div className="flex justify-end gap-2">
-                <button onClick={() => setShowProfile(false)} className="px-3 py-1 border rounded">Huỷ</button>
-                <button onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-primary rounded">Lưu</button>
+                <button type="button" onClick={() => setShowProfile(false)} className="px-3 py-1 border rounded">Huỷ</button>
+                <button type="button" onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-pink-400 rounded">Lưu</button>
               </div>
             </div>
           </div>
         </div>
       )}
-    </aside>
+    </motion.aside>
   )
 }
 

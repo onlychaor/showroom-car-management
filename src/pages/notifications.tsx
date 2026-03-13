@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+// Layout now provided at app level
 import { useEffect, useMemo, useState } from 'react'
 import NotificationCard from '../components/NotificationCard'
 import Modal from '../components/Modal'
@@ -16,7 +16,11 @@ export default function NotificationsPage() {
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setItems(data || []))
+    fetch('/api/contacts')
+      .then((r) => r.json())
+      .then((data) => {
+        setItems(Array.isArray(data) ? data : [])
+      })
   }, [])
 
   const today = useMemo(() => items.filter((i) => isSameDay(i.scheduled_at, new Date())), [items])
@@ -37,7 +41,11 @@ export default function NotificationsPage() {
   }, [items])
 
   function refresh() {
-    fetch('/api/contacts').then((r) => r.json()).then((data) => setItems(data || []))
+    fetch('/api/contacts')
+      .then((r) => r.json())
+      .then((data) => {
+        setItems(Array.isArray(data) ? data : [])
+      })
     setShowForm(false)
     setEditing(null)
   }
@@ -48,7 +56,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Notifications</h1>
         <div />
@@ -80,7 +88,7 @@ export default function NotificationsPage() {
       <Modal open={showForm} title={editing ? 'Edit Notification' : 'New Notification'} onClose={() => setShowForm(false)}>
         <ContactForm initial={editing} onSaved={refresh} />
       </Modal>
-    </Layout>
+    </>
   )
 }
 

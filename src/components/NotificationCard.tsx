@@ -24,8 +24,8 @@ export default function NotificationCard({ item, onEdit, onDelete }: { item: any
         </div>
 
         <div className="ml-4 flex flex-col gap-2">
-          <button onClick={() => onEdit?.(item)} className="text-slate-400 hover:text-white">✎</button>
-          <button onClick={() => onDelete?.(item.id)} className="text-red-400 hover:text-red-200">🗑</button>
+          <button type="button" onClick={() => onEdit?.(item)} className="text-slate-400 hover:text-white">✎</button>
+          <button type="button" onClick={() => onDelete?.(item.id)} className="text-red-400 hover:text-red-200">🗑</button>
         </div>
       </div>
     </div>

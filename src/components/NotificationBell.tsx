@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 
 type CarItem = { id: string; name: string; color?: string; price?: string; daysLeft?: number }
 
@@ -13,6 +14,8 @@ function daysLeftFor(name: string) {
 export default function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<CarItem[]>([])
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -32,20 +35,52 @@ export default function NotificationBell() {
     load()
   }, [])
 
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!open) return
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [open])
+
+  function toggle() {
+    if (!ref.current) {
+      setOpen((s) => !s)
+      return
+    }
+    const rect = ref.current.getBoundingClientRect()
+    // dropdown width matches w-96 (384px)
+    const width = 384
+    const left = Math.min(window.innerWidth - width - 12, rect.right - width + rect.width)
+    const top = rect.bottom + 8
+    setPos({ top, left })
+    setOpen((s) => !s)
+  }
+
   const urgent = items.filter((i) => i.daysLeft !== undefined && i.daysLeft <= 3)
 
   return (
-    <div className="relative">
-      <button onClick={() => setOpen(!open)} className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 z-40">
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={toggle} className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 z-40" aria-expanded={open}>
         <span role="img" aria-label="bell">🔔</span>
         {urgent.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center text-white">{urgent.length}</span>}
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setOpen(false)} />
-
-          <div className="absolute top-16 right-6 w-96 bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white z-60 border border-slate-800">
+      {open && pos && createPortal(
+        <>
+          <div
+            aria-hidden
+            onClick={() => setOpen(false)}
+            style={{ position: 'fixed', inset: 0, zIndex: 9990 }}
+            className="bg-black/50 backdrop-blur-sm"
+          />
+          <div
+            role="dialog"
+            aria-label="Notifications"
+            style={{ position: 'fixed', top: pos.top, left: pos.left, width: 384, zIndex: 9999 }}
+            className="bg-[#071428] card-bg rounded shadow-2xl p-4 text-sm text-white border border-slate-800"
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="font-medium text-white">Xe sắp hết hạn</div>
               <div className="text-xs text-slate-300">{urgent.length} sắp hết hạn</div>
@@ -64,7 +99,8 @@ export default function NotificationBell() {
               ))}
             </ul>
           </div>
-        </div>
+        </>,
+        document.body
       )}
     </div>
   )

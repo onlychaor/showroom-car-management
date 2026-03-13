@@ -1,6 +1,13 @@
-export default function StatCard({ title, value, children }: { title: string; value: string | number; children?: React.ReactNode }) {
+import React from 'react'
+import { motion } from 'framer-motion'
+
+function StatCard({ title, value, children }: { title: string; value: string | number; children?: React.ReactNode }) {
   return (
-    <div className="card-bg p-4 rounded-lg shadow min-h-[100px]">
+    <motion.div
+      className="card-bg p-4 rounded-lg shadow min-h-[100px]"
+      whileHover={{ y: -6, boxShadow: '0 18px 40px rgba(2,6,23,0.6)' }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+    >
       <div className="flex items-center justify-between">
         <div>
           <div className="text-sm text-slate-400">{title}</div>
@@ -8,7 +15,7 @@ export default function StatCard({ title, value, children }: { title: string; va
         </div>
         <div>{children}</div>
       </div>
-    </div>
+    </motion.div>
   )
 }
-
+export default React.memo(StatCard)

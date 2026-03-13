@@ -50,8 +50,8 @@ export default function AuthPage() {
     <AuthLayout>
       <div className="w-full max-w-md bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-center gap-4 mb-4">
-            <button onClick={() => setMode('signin')} className={`px-4 py-2 rounded ${isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign in</button>
-            <button onClick={() => setMode('signup')} className={`px-4 py-2 rounded ${!isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign up</button>
+            <button type="button" onClick={() => setMode('signin')} className={`px-4 py-2 rounded ${isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign in</button>
+            <button type="button" onClick={() => setMode('signup')} className={`px-4 py-2 rounded ${!isSignIn ? 'bg-primary text-white' : 'bg-white/20'}`}>Sign up</button>
           </div>
 
           <h2 className="text-center text-lg font-semibold mb-1 text-black">{isSignIn ? 'Sign in' : 'Đăng ký'}</h2>

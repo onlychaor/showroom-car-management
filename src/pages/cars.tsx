@@ -67,8 +67,8 @@ export default function CarsPage() {
                   <td>{c.color}</td>
                   <td>{c.price}</td>
                   <td className="text-right">
-                    <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
-                    <button onClick={() => remove(c.id)} className="text-sm text-red-400">Delete</button>
+                  <button type="button" onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
+                  <button type="button" onClick={() => remove(c.id)} className="text-sm text-red-400">Delete</button>
                   </td>
                 </tr>
               ))}

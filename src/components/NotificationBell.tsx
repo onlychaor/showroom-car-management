@@ -46,7 +46,7 @@ export default function NotificationBell() {
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen(!open)} className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 z-40">
+      <button type="button" onClick={() => setOpen(!open)} className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 z-40">
         <span role="img" aria-label="bell">🔔</span>
         {urgent.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center text-white">{urgent.length}</span>}
       </button>

@@ -85,7 +85,7 @@ export default function CalendarPage() {
               const items = eventsByDay[key] || []
               return (
                 <div key={key} className="min-h-[240px] border border-slate-800 rounded p-2">
-                  <button onClick={() => openNewFor(d)} className="text-xs text-slate-400 mb-2">+ add</button>
+                  <button type="button" onClick={() => openNewFor(d)} className="text-xs text-slate-400 mb-2">+ add</button>
                   <div className="space-y-2">
                     {items.map((it: any) => (
                       <div key={it.id} className="p-2 rounded border border-slate-700 bg-[#071428] hover:bg-[#0b1724] cursor-pointer" onClick={() => { setSelected(it); setShowForm(true) }}>

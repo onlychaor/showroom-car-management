@@ -77,8 +77,8 @@ export default function ContactsPage() {
                   <td>{c.email}</td>
                   <td>{c.status}</td>
                   <td className="text-right">
-                    <button onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
-                    <button onClick={() => setShowConfirm({ id: c.id, title: c.title })} className="text-sm text-red-400">Delete</button>
+                  <button type="button" onClick={() => { setEditing(c); setShowForm(true) }} className="text-sm text-primary/80 mr-3">Edit</button>
+                  <button type="button" onClick={() => setShowConfirm({ id: c.id, title: c.title })} className="text-sm text-red-400">Delete</button>
                   </td>
                 </tr>
               ))}
@@ -94,7 +94,7 @@ export default function ContactsPage() {
       <Modal open={!!showConfirm} title="Xác nhận xoá" onClose={() => setShowConfirm(null)}>
         <div className="mb-4">Bạn muốn xoá contact <strong>{showConfirm?.title}</strong>?</div>
         <div className="flex justify-end gap-2">
-          <button onClick={() => setShowConfirm(null)} className="px-3 py-1 border rounded">Huỷ</button>
+          <button type="button" onClick={() => setShowConfirm(null)} className="px-3 py-1 border rounded">Huỷ</button>
           <Button onClick={() => { if (showConfirm) remove(showConfirm.id); }} variant="primary" size="sm">Xoá</Button>
         </div>
       </Modal>

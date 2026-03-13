@@ -30,7 +30,7 @@ export default function Modal({ open, title, children, onClose }: { open: boolea
           >
             <div className="flex items-center justify-between mb-4">
               {title ? <div className="text-lg font-semibold">{title}</div> : <div />}
-              <button onClick={onClose} className="text-slate-400 hover:text-white">✕</button>
+              <button type="button" onClick={onClose} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <div className="pt-2">{children}</div>
           </motion.div>

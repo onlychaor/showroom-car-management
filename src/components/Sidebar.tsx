@@ -103,7 +103,7 @@ export const Sidebar = () => {
       </nav>
 
       <div className="absolute bottom-6 left-6 text-slate-400">
-        <button onClick={signOut} className="text-sm">Logout</button>
+        <button type="button" onClick={signOut} className="text-sm">Logout</button>
       </div>
       {showProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -111,7 +111,7 @@ export const Sidebar = () => {
           <div className="relative bg-[#071428] rounded-xl shadow-2xl p-6 w-full max-w-md text-white border border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div className="text-lg font-semibold">Chỉnh sửa hồ sơ</div>
-              <button onClick={() => setShowProfile(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button type="button" onClick={() => setShowProfile(false)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <div className="space-y-3">
               <label className="block">
@@ -123,8 +123,8 @@ export const Sidebar = () => {
                 <input value={emailInput} onChange={(e) => setEmailInput(e.target.value)} className="w-full px-3 py-2 rounded bg-transparent border border-slate-700" />
               </label>
               <div className="flex justify-end gap-2">
-                <button onClick={() => setShowProfile(false)} className="px-3 py-1 border rounded">Huỷ</button>
-                <button onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-pink-400 rounded">Lưu</button>
+                <button type="button" onClick={() => setShowProfile(false)} className="px-3 py-1 border rounded">Huỷ</button>
+                <button type="button" onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-pink-400 rounded">Lưu</button>
               </div>
             </div>
           </div>

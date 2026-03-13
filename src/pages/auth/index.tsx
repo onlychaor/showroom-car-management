@@ -108,7 +108,7 @@ export default function AuthPage() {
 
             <button
               disabled={loading}
-              className="w-full py-2 rounded-md bg-gradient-to-r from-purple-500 to-pink-400 text-white font-semibold"
+              className="w-full py-2 rounded-md bg-primary text-white font-semibold"
             >
               {loading ? 'Processing...' : isSignIn ? 'Sign in' : 'Create account'}
             </button>

@@ -33,7 +33,7 @@ export default function CarsPage() {
       <div className="flex items-center justify-between mb-3">
         <div />
         <div>
-          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add car</button>
+          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-primary rounded">Add car</button>
         </div>
       </div>
 

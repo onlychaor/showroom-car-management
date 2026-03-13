@@ -38,7 +38,7 @@ export default function ContactForm({ onSaved, initial }: { onSaved: () => void;
         <input value={carId} onChange={(e) => setCarId(e.target.value)} placeholder="car id" className="w-full px-3 py-2 rounded bg-transparent border border-slate-700" />
       </label>
       <div className="flex gap-2">
-        <button className="px-4 py-2 bg-pink-400 rounded">Save</button>
+        <button className="px-4 py-2 bg-primary rounded">Save</button>
       </div>
     </form>
   )

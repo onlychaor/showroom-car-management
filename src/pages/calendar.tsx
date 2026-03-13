@@ -62,7 +62,7 @@ export default function CalendarPage() {
         <h1 className="text-2xl font-semibold">Schedular</h1>
         <div className="flex items-center gap-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." className="px-3 py-2 rounded bg-white/5" />
-          <button onClick={() => { setSelected(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add +</button>
+          <button onClick={() => { setSelected(null); setShowForm(true) }} className="px-4 py-2 bg-primary rounded">Add +</button>
         </div>
       </div>
 

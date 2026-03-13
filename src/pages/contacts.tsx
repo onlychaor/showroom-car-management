@@ -42,7 +42,7 @@ export default function ContactsPage() {
         <h1 className="text-2xl font-semibold">Contacts</h1>
         <div className="flex items-center gap-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." className="px-3 py-2 rounded bg-white/5" />
-          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-pink-400 rounded">Add contact</button>
+          <button onClick={() => { setEditing(null); setShowForm(true) }} className="px-4 py-2 bg-primary rounded">Add contact</button>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function ContactsPage() {
         <div className="mb-4">Bạn muốn xoá contact <strong>{showConfirm?.title}</strong>?</div>
         <div className="flex justify-end gap-2">
           <button onClick={() => setShowConfirm(null)} className="px-3 py-1 border rounded">Huỷ</button>
-          <button onClick={() => { if (showConfirm) remove(showConfirm.id); }} className="px-3 py-1 bg-pink-400 rounded text-white">Xoá</button>
+          <button onClick={() => { if (showConfirm) remove(showConfirm.id); }} className="px-3 py-1 bg-primary rounded text-white">Xoá</button>
         </div>
       </Modal>
     </Layout>

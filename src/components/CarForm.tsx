@@ -20,7 +20,7 @@ export default function CarForm({ onSaved, initial }: { onSaved: () => void; ini
       <input value={color} onChange={(e) => setColor(e.target.value)} placeholder="Color" className="w-full px-3 py-2 rounded bg-transparent border border-slate-700" />
       <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="w-full px-3 py-2 rounded bg-transparent border border-slate-700" />
       <div className="flex gap-2">
-        <button className="px-4 py-2 bg-pink-400 rounded">Save</button>
+        <button className="px-4 py-2 bg-primary rounded">Save</button>
       </div>
     </form>
   )

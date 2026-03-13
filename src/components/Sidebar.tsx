@@ -63,7 +63,7 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative">
       <div className="mb-8">
-        <div className="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center font-bold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>AD</div>
+        <div className="w-12 h-12 rounded bg-primary flex items-center justify-center font-bold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>AD</div>
         <div className="mt-3">
           <div className="font-semibold cursor-pointer" onClick={() => { setNameInput(user?.name || ''); setEmailInput(user?.email || ''); setShowProfile(true) }}>{user?.name || (user?.email ? `Chào, ${user.email.split('@')[0]}` : 'Chào, John')}</div>
           <div className="text-xs text-slate-400">{user?.email || 'Admin@gmail.com'}</div>
@@ -118,7 +118,7 @@ export const Sidebar = () => {
               </label>
               <div className="flex justify-end gap-2">
                 <button onClick={() => setShowProfile(false)} className="px-3 py-1 border rounded">Huỷ</button>
-                <button onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-pink-400 rounded">Lưu</button>
+                <button onClick={async () => { await updateUser({ name: nameInput, email: emailInput }); setShowProfile(false) }} className="px-3 py-1 bg-primary rounded">Lưu</button>
               </div>
             </div>
           </div>

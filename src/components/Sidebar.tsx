@@ -110,16 +110,14 @@ export const Sidebar = () => {
                   <path fillRule="evenodd" d="M6 4l6 6-6 6V4z" clipRule="evenodd" />
                 </svg>
               </div>
-              {openGroups[n.href] && (
-                <div className="ml-4 mt-1 space-y-1">
-                  {n.children.map((c: any) => (
-                    <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
-                      <Icon name={c.icon} />
-                      <span className="text-sm">{c.label}</span>
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <div className={`ml-4 mt-1 space-y-1 ${openGroups[n.href] ? '' : 'hidden'}`} aria-hidden={!openGroups[n.href]}>
+                {n.children.map((c: any) => (
+                  <Link key={c.href} href={c.href} className={`block px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === c.href ? 'bg-[#0b1b2b]' : ''}`}>
+                    <Icon name={c.icon} />
+                    <span className="text-sm">{c.label}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           ) : (
             <Link key={n.href} href={n.href} className={`px-3 py-2 rounded hover:bg-[#0b1b2b] flex items-center ${pathname === n.href ? 'bg-[#0b1b2b]' : ''}`}>

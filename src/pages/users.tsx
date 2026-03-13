@@ -44,7 +44,7 @@ export default function UsersPage() {
   })
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Users</h1>
         <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ export default function UsersPage() {
           <Button onClick={() => { if (showConfirm) remove(showConfirm.id); }} variant="primary" size="sm">Xoá</Button>
         </div>
       </Modal>
-    </Layout>
+    </>
   )
 }
 

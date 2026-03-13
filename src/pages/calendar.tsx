@@ -60,7 +60,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Schedular</h1>
         <div className="flex items-center gap-3">
@@ -137,7 +137,7 @@ export default function CalendarPage() {
       <Modal open={showForm} title={selected?.id ? 'Edit Event' : 'New Event'} onClose={() => setShowForm(false)}>
         <ContactForm initial={selected} onSaved={refresh} />
       </Modal>
-    </Layout>
+    </>
   )
 }
 

@@ -34,7 +34,7 @@ export default function CarsPage() {
   }
 
   return (
-    <Layout>
+    <>
       <h1 className="text-2xl font-semibold mb-6">Cars</h1>
       <div className="flex items-center justify-between mb-3">
         <div />
@@ -80,7 +80,7 @@ export default function CarsPage() {
       <Modal open={showForm} title={editing ? 'Edit car' : 'New car'} onClose={() => setShowForm(false)}>
         <CarForm initial={editing} onSaved={refresh} />
       </Modal>
-    </Layout>
+    </>
   )
 }
 

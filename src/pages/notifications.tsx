@@ -56,7 +56,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Notifications</h1>
         <div />
@@ -88,7 +88,7 @@ export default function NotificationsPage() {
       <Modal open={showForm} title={editing ? 'Edit Notification' : 'New Notification'} onClose={() => setShowForm(false)}>
         <ContactForm initial={editing} onSaved={refresh} />
       </Modal>
-    </Layout>
+    </>
   )
 }
 

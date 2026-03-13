@@ -60,7 +60,7 @@ export default function Dashboard() {
   const [report, setReport] = useState<any>(null)
 
   return (
-    <Layout>
+    <>
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold mb-1">Thống kê</h1>
@@ -202,7 +202,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   )
 }
 

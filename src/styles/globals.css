@@ -24,3 +24,22 @@ body {
   outline-offset: 2px;
 }
 
+/* Light theme overrides when <html class="light"> is set */
+html.light body {
+  background: #f7fafc;
+  color: #0f1724;
+}
+
+html.light .card-bg {
+  background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(245,247,250,0.9));
+  border: 1px solid rgba(15,23,36,0.06);
+  box-shadow: 0 8px 20px rgba(2,6,23,0.04);
+  backdrop-filter: none;
+}
+
+html.light .text-slate-400 { color: #4b5563; }
+html.light .text-slate-300 { color: #6b7280; }
+html.light .text-slate-200 { color: #334155; }
+html.light .bg-white\\/5 { background-color: rgba(255,255,255,0.06); }
+
+

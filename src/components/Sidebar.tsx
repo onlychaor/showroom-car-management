@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import ThemeToggle from './ThemeToggle'
 import { useRouter } from 'next/router'
 import { useAuth } from '../lib/auth'
 
@@ -74,6 +75,8 @@ export const Sidebar = () => {
     } catch (e) {}
   }, [openGroups])
 
+  // theme toggle (component imported above)
+
   return (
     <motion.aside
       className="w-64 min-h-screen p-6 bg-[#071428] text-slate-200 relative"
@@ -128,7 +131,8 @@ export const Sidebar = () => {
         )}
       </nav>
 
-      <div className="absolute bottom-6 left-6 text-slate-400">
+      <div className="absolute bottom-6 left-6 text-slate-400 flex items-center gap-3">
+        <ThemeToggle />
         <button type="button" onClick={signOut} className="text-sm">Logout</button>
       </div>
       {showProfile && (

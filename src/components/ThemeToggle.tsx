@@ -1,18 +1,25 @@
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-  const [isLight, setIsLight] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false
-    try {
-      const v = localStorage.getItem('theme')
-      if (v) return v === 'light'
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
-    } catch {
-      return false
-    }
-  })
+  const [mounted, setMounted] = useState(false)
+  const [isLight, setIsLight] = useState<boolean>(false)
 
   useEffect(() => {
+    setMounted(true)
+    try {
+      const v = localStorage.getItem('theme')
+      const prefers = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+      const initial = v ? v === 'light' : Boolean(prefers)
+      setIsLight(initial)
+      if (initial) document.documentElement.classList.add('light')
+      else document.documentElement.classList.remove('light')
+    } catch (e) {
+      // ignore
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     try {
       if (isLight) {
         document.documentElement.classList.add('light')
@@ -22,7 +29,9 @@ export default function ThemeToggle() {
         localStorage.setItem('theme', 'dark')
       }
     } catch (e) {}
-  }, [isLight])
+  }, [isLight, mounted])
+
+  if (!mounted) return null
 
   return (
     <button
